@@ -1,0 +1,5688 @@
+backend: tensorflow
+class_name: Functional
+config:
+  input_layers:
+  - - input_1
+    - 0
+    - 0
+  layers:
+  - class_name: InputLayer
+    config:
+      batch_input_shape: !!python/tuple
+      - null
+      - 16384
+      - 4
+      dtype: float32
+      name: input_1
+      ragged: false
+      sparse: false
+    inbound_nodes: []
+    name: input_1
+  - class_name: Functional
+    config:
+      input_layers:
+      - - input_2
+        - 0
+        - 0
+      layers:
+      - class_name: InputLayer
+        config:
+          batch_input_shape: !!python/tuple
+          - null
+          - 16384
+          - 4
+          dtype: float32
+          name: input_2
+          ragged: false
+          sparse: false
+        inbound_nodes: []
+        name: input_2
+      - class_name: Conv1D
+        config:
+          activation: linear
+          activity_regularizer: null
+          bias_constraint: null
+          bias_initializer:
+            class_name: Zeros
+            config: {}
+          bias_regularizer:
+            class_name: L2
+            config:
+              l2: 9.999999747378752e-06
+          data_format: channels_last
+          dilation_rate: !!python/tuple
+          - 1
+          dtype: float32
+          filters: 64
+          groups: 1
+          kernel_constraint: null
+          kernel_initializer:
+            class_name: GlorotUniform
+            config:
+              seed: null
+          kernel_regularizer:
+            class_name: MotifRegularizer
+            config:
+              filter_width: 8
+              motif_definitions: null
+              n_filters: 64
+              strength: 1.0e-05
+          kernel_size: !!python/tuple
+          - 8
+          name: conv1d
+          padding: same
+          strides: !!python/tuple
+          - 1
+          trainable: true
+          use_bias: true
+        inbound_nodes:
+        - - - input_2
+            - 0
+            - 0
+            - {}
+        name: conv1d
+      - class_name: ReLU
+        config:
+          dtype: float32
+          max_value: null
+          name: re_lu
+          negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+            args:
+            - &id001 !!python/name:numpy.ndarray ''
+            - !!python/tuple
+              - 0
+            - !!binary |
+              Yg==
+            state: !!python/tuple
+            - 1
+            - !!python/tuple []
+            - &id002 !!python/object/apply:numpy.dtype
+              args:
+              - f4
+              - 0
+              - 1
+              state: !!python/tuple
+              - 3
+              - <
+              - null
+              - null
+              - null
+              - -1
+              - -1
+              - 0
+            - false
+            - !!binary |
+              AAAAAA==
+          threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+            args:
+            - *id001
+            - !!python/tuple
+              - 0
+            - !!binary |
+              Yg==
+            state: !!python/tuple
+            - 1
+            - !!python/tuple []
+            - *id002
+            - false
+            - !!binary |
+              AAAAAA==
+          trainable: true
+        inbound_nodes:
+        - - - conv1d
+            - 0
+            - 0
+            - {}
+        name: re_lu
+      - class_name: Conv1D
+        config:
+          activation: linear
+          activity_regularizer: null
+          bias_constraint: null
+          bias_initializer:
+            class_name: Zeros
+            config: {}
+          bias_regularizer:
+            class_name: L2
+            config:
+              l2: 9.999999747378752e-06
+          data_format: channels_last
+          dilation_rate: !!python/tuple
+          - 1
+          dtype: float32
+          filters: 32
+          groups: 1
+          kernel_constraint: null
+          kernel_initializer:
+            class_name: GlorotUniform
+            config:
+              seed: null
+          kernel_regularizer:
+            class_name: L2
+            config:
+              l2: 9.999999747378752e-06
+          kernel_size: !!python/tuple
+          - 1
+          name: conv1d_1
+          padding: same
+          strides: !!python/tuple
+          - 1
+          trainable: true
+          use_bias: true
+        inbound_nodes:
+        - - - re_lu
+            - 0
+            - 0
+            - {}
+        name: conv1d_1
+      - class_name: ReLU
+        config:
+          dtype: float32
+          max_value: null
+          name: re_lu_1
+          negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+            args:
+            - *id001
+            - !!python/tuple
+              - 0
+            - !!binary |
+              Yg==
+            state: !!python/tuple
+            - 1
+            - !!python/tuple []
+            - *id002
+            - false
+            - !!binary |
+              AAAAAA==
+          threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+            args:
+            - *id001
+            - !!python/tuple
+              - 0
+            - !!binary |
+              Yg==
+            state: !!python/tuple
+            - 1
+            - !!python/tuple []
+            - *id002
+            - false
+            - !!binary |
+              AAAAAA==
+          trainable: true
+        inbound_nodes:
+        - - - conv1d_1
+            - 0
+            - 0
+            - {}
+        name: re_lu_1
+      name: MotifModel-1xConv1d-0xResid
+      output_layers:
+      - - re_lu_1
+        - 0
+        - 0
+    inbound_nodes:
+    - - - input_1
+        - 0
+        - 0
+        - {}
+    name: MotifModel-1xConv1d-0xResid
+  - class_name: Cropping1D
+    config:
+      cropping: !!python/tuple
+      - 0
+      - 0
+      dtype: float32
+      name: cropping1d
+      trainable: true
+    inbound_nodes:
+    - - - MotifModel-1xConv1d-0xResid
+        - 1
+        - 0
+        - {}
+    name: cropping1d
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - cropping1d
+        - 0
+        - 0
+        - {}
+    name: batch_normalization
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_2
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization
+        - 0
+        - 0
+        - {}
+    name: re_lu_2
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 1
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 11
+      name: conv1d_2
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_2
+        - 0
+        - 0
+        - {}
+    name: conv1d_2
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_1
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_2
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_1
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_3
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_1
+        - 0
+        - 0
+        - {}
+    name: re_lu_3
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 1
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 11
+      name: conv1d_3
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_3
+        - 0
+        - 0
+        - {}
+    name: conv1d_3
+  - class_name: Add
+    config:
+      dtype: float32
+      name: add
+      trainable: true
+    inbound_nodes:
+    - - - cropping1d
+        - 0
+        - 0
+        - &id003 {}
+      - - conv1d_3
+        - 0
+        - 0
+        - *id003
+    name: add
+  - class_name: MaxPooling1D
+    config:
+      data_format: channels_last
+      dtype: float32
+      name: max_pooling1d
+      padding: valid
+      pool_size: &id004 !!python/tuple
+      - 2
+      strides: *id004
+      trainable: true
+    inbound_nodes:
+    - - - add
+        - 0
+        - 0
+        - {}
+    name: max_pooling1d
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_2
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - max_pooling1d
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_2
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_4
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_2
+        - 0
+        - 0
+        - {}
+    name: re_lu_4
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 1
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 11
+      name: conv1d_4
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_4
+        - 0
+        - 0
+        - {}
+    name: conv1d_4
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_3
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_4
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_3
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_5
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_3
+        - 0
+        - 0
+        - {}
+    name: re_lu_5
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 1
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 11
+      name: conv1d_5
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_5
+        - 0
+        - 0
+        - {}
+    name: conv1d_5
+  - class_name: Add
+    config:
+      dtype: float32
+      name: add_1
+      trainable: true
+    inbound_nodes:
+    - - - max_pooling1d
+        - 0
+        - 0
+        - &id005 {}
+      - - conv1d_5
+        - 0
+        - 0
+        - *id005
+    name: add_1
+  - class_name: MaxPooling1D
+    config:
+      data_format: channels_last
+      dtype: float32
+      name: max_pooling1d_1
+      padding: valid
+      pool_size: *id004
+      strides: *id004
+      trainable: true
+    inbound_nodes:
+    - - - add_1
+        - 0
+        - 0
+        - {}
+    name: max_pooling1d_1
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_4
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - max_pooling1d_1
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_4
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_6
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_4
+        - 0
+        - 0
+        - {}
+    name: re_lu_6
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 1
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 11
+      name: conv1d_6
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_6
+        - 0
+        - 0
+        - {}
+    name: conv1d_6
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_5
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_6
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_5
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_7
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_5
+        - 0
+        - 0
+        - {}
+    name: re_lu_7
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 1
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 11
+      name: conv1d_7
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_7
+        - 0
+        - 0
+        - {}
+    name: conv1d_7
+  - class_name: Add
+    config:
+      dtype: float32
+      name: add_2
+      trainable: true
+    inbound_nodes:
+    - - - max_pooling1d_1
+        - 0
+        - 0
+        - &id006 {}
+      - - conv1d_7
+        - 0
+        - 0
+        - *id006
+    name: add_2
+  - class_name: MaxPooling1D
+    config:
+      data_format: channels_last
+      dtype: float32
+      name: max_pooling1d_2
+      padding: valid
+      pool_size: *id004
+      strides: *id004
+      trainable: true
+    inbound_nodes:
+    - - - add_2
+        - 0
+        - 0
+        - {}
+    name: max_pooling1d_2
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_6
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - max_pooling1d_2
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_6
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_8
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_6
+        - 0
+        - 0
+        - {}
+    name: re_lu_8
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 1
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 11
+      name: conv1d_8
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_8
+        - 0
+        - 0
+        - {}
+    name: conv1d_8
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_7
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_8
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_7
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_9
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_7
+        - 0
+        - 0
+        - {}
+    name: re_lu_9
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 1
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 11
+      name: conv1d_9
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_9
+        - 0
+        - 0
+        - {}
+    name: conv1d_9
+  - class_name: Add
+    config:
+      dtype: float32
+      name: add_3
+      trainable: true
+    inbound_nodes:
+    - - - max_pooling1d_2
+        - 0
+        - 0
+        - &id007 {}
+      - - conv1d_9
+        - 0
+        - 0
+        - *id007
+    name: add_3
+  - class_name: MaxPooling1D
+    config:
+      data_format: channels_last
+      dtype: float32
+      name: max_pooling1d_3
+      padding: valid
+      pool_size: *id004
+      strides: *id004
+      trainable: true
+    inbound_nodes:
+    - - - add_3
+        - 0
+        - 0
+        - {}
+    name: max_pooling1d_3
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_8
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - max_pooling1d_3
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_8
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_10
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_8
+        - 0
+        - 0
+        - {}
+    name: re_lu_10
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 2
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 11
+      name: conv1d_10
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_10
+        - 0
+        - 0
+        - {}
+    name: conv1d_10
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_9
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_10
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_9
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_11
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_9
+        - 0
+        - 0
+        - {}
+    name: re_lu_11
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 2
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 11
+      name: conv1d_11
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_11
+        - 0
+        - 0
+        - {}
+    name: conv1d_11
+  - class_name: Add
+    config:
+      dtype: float32
+      name: add_4
+      trainable: true
+    inbound_nodes:
+    - - - max_pooling1d_3
+        - 0
+        - 0
+        - &id008 {}
+      - - conv1d_11
+        - 0
+        - 0
+        - *id008
+    name: add_4
+  - class_name: MaxPooling1D
+    config:
+      data_format: channels_last
+      dtype: float32
+      name: max_pooling1d_4
+      padding: valid
+      pool_size: *id004
+      strides: *id004
+      trainable: true
+    inbound_nodes:
+    - - - add_4
+        - 0
+        - 0
+        - {}
+    name: max_pooling1d_4
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_10
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - max_pooling1d_4
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_10
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_12
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_10
+        - 0
+        - 0
+        - {}
+    name: re_lu_12
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 2
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 11
+      name: conv1d_12
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_12
+        - 0
+        - 0
+        - {}
+    name: conv1d_12
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_11
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_12
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_11
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_13
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_11
+        - 0
+        - 0
+        - {}
+    name: re_lu_13
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 2
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 11
+      name: conv1d_13
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_13
+        - 0
+        - 0
+        - {}
+    name: conv1d_13
+  - class_name: Add
+    config:
+      dtype: float32
+      name: add_5
+      trainable: true
+    inbound_nodes:
+    - - - max_pooling1d_4
+        - 0
+        - 0
+        - &id009 {}
+      - - conv1d_13
+        - 0
+        - 0
+        - *id009
+    name: add_5
+  - class_name: MaxPooling1D
+    config:
+      data_format: channels_last
+      dtype: float32
+      name: max_pooling1d_5
+      padding: valid
+      pool_size: *id004
+      strides: *id004
+      trainable: true
+    inbound_nodes:
+    - - - add_5
+        - 0
+        - 0
+        - {}
+    name: max_pooling1d_5
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_12
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - max_pooling1d_5
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_12
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_14
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_12
+        - 0
+        - 0
+        - {}
+    name: re_lu_14
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 2
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 11
+      name: conv1d_14
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_14
+        - 0
+        - 0
+        - {}
+    name: conv1d_14
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_13
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_14
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_13
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_15
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_13
+        - 0
+        - 0
+        - {}
+    name: re_lu_15
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 2
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 11
+      name: conv1d_15
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_15
+        - 0
+        - 0
+        - {}
+    name: conv1d_15
+  - class_name: Add
+    config:
+      dtype: float32
+      name: add_6
+      trainable: true
+    inbound_nodes:
+    - - - max_pooling1d_5
+        - 0
+        - 0
+        - &id010 {}
+      - - conv1d_15
+        - 0
+        - 0
+        - *id010
+    name: add_6
+  - class_name: MaxPooling1D
+    config:
+      data_format: channels_last
+      dtype: float32
+      name: max_pooling1d_6
+      padding: valid
+      pool_size: *id004
+      strides: *id004
+      trainable: true
+    inbound_nodes:
+    - - - add_6
+        - 0
+        - 0
+        - {}
+    name: max_pooling1d_6
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_14
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - max_pooling1d_6
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_14
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_16
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_14
+        - 0
+        - 0
+        - {}
+    name: re_lu_16
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 2
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 11
+      name: conv1d_16
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_16
+        - 0
+        - 0
+        - {}
+    name: conv1d_16
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_15
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_16
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_15
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_17
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_15
+        - 0
+        - 0
+        - {}
+    name: re_lu_17
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 2
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 11
+      name: conv1d_17
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_17
+        - 0
+        - 0
+        - {}
+    name: conv1d_17
+  - class_name: Add
+    config:
+      dtype: float32
+      name: add_7
+      trainable: true
+    inbound_nodes:
+    - - - max_pooling1d_6
+        - 0
+        - 0
+        - &id011 {}
+      - - conv1d_17
+        - 0
+        - 0
+        - *id011
+    name: add_7
+  - class_name: MaxPooling1D
+    config:
+      data_format: channels_last
+      dtype: float32
+      name: max_pooling1d_7
+      padding: valid
+      pool_size: *id004
+      strides: *id004
+      trainable: true
+    inbound_nodes:
+    - - - add_7
+        - 0
+        - 0
+        - {}
+    name: max_pooling1d_7
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_16
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - max_pooling1d_7
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_16
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_18
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_16
+        - 0
+        - 0
+        - {}
+    name: re_lu_18
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 2
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 11
+      name: conv1d_18
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_18
+        - 0
+        - 0
+        - {}
+    name: conv1d_18
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_17
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_18
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_17
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_19
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_17
+        - 0
+        - 0
+        - {}
+    name: re_lu_19
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 2
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 11
+      name: conv1d_19
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_19
+        - 0
+        - 0
+        - {}
+    name: conv1d_19
+  - class_name: Add
+    config:
+      dtype: float32
+      name: add_8
+      trainable: true
+    inbound_nodes:
+    - - - max_pooling1d_7
+        - 0
+        - 0
+        - &id012 {}
+      - - conv1d_19
+        - 0
+        - 0
+        - *id012
+    name: add_8
+  - class_name: Conv1DTranspose
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer: null
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 1
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotNormal
+        config:
+          seed: null
+      kernel_regularizer: null
+      kernel_size: !!python/tuple
+      - 21
+      name: conv1d_transpose
+      output_padding: null
+      padding: same
+      strides: *id004
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - add_8
+        - 0
+        - 0
+        - {}
+    name: conv1d_transpose
+  - class_name: Concatenate
+    config:
+      axis: -1
+      dtype: float32
+      name: concatenate
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_transpose
+        - 0
+        - 0
+        - &id013 {}
+      - - add_7
+        - 0
+        - 0
+        - *id013
+    name: concatenate
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_18
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - concatenate
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_18
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_20
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_18
+        - 0
+        - 0
+        - {}
+    name: re_lu_20
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 10
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 21
+      name: conv1d_20
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_20
+        - 0
+        - 0
+        - {}
+    name: conv1d_20
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_19
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_20
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_19
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_21
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_19
+        - 0
+        - 0
+        - {}
+    name: re_lu_21
+  - class_name: TensorFlowOpLayer
+    config:
+      constants:
+        1: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - &id014 !!python/object/apply:numpy.dtype
+            args:
+            - i4
+            - 0
+            - 1
+            state: !!python/tuple
+            - 3
+            - <
+            - null
+            - null
+            - null
+            - -1
+            - -1
+            - 0
+          - false
+          - !!binary |
+            AAAAAAAAAAAAAAAA
+        2: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AAAAAAAAAAAgAAAA
+        3: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AQAAAAEAAAABAAAA
+      dtype: float32
+      name: strided_slice
+      node_def:
+        attr:
+          Index:
+            type: DT_INT32
+          T:
+            type: DT_FLOAT
+          begin_mask:
+            i: '3'
+          ellipsis_mask:
+            i: '0'
+          end_mask:
+            i: '3'
+          new_axis_mask:
+            i: '0'
+          shrink_axis_mask:
+            i: '0'
+        input:
+        - concatenate/concat
+        - strided_slice/begin
+        - strided_slice/end
+        - strided_slice/strides
+        name: strided_slice
+        op: StridedSlice
+      trainable: true
+    inbound_nodes:
+    - - - concatenate
+        - 0
+        - 0
+        - {}
+    name: tf_op_layer_strided_slice
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 10
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 21
+      name: conv1d_21
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_21
+        - 0
+        - 0
+        - {}
+    name: conv1d_21
+  - class_name: Add
+    config:
+      dtype: float32
+      name: add_9
+      trainable: true
+    inbound_nodes:
+    - - - tf_op_layer_strided_slice
+        - 0
+        - 0
+        - &id015 {}
+      - - conv1d_21
+        - 0
+        - 0
+        - *id015
+    name: add_9
+  - class_name: Conv1DTranspose
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer: null
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 1
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotNormal
+        config:
+          seed: null
+      kernel_regularizer: null
+      kernel_size: !!python/tuple
+      - 21
+      name: conv1d_transpose_1
+      output_padding: null
+      padding: same
+      strides: *id004
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - add_9
+        - 0
+        - 0
+        - {}
+    name: conv1d_transpose_1
+  - class_name: Concatenate
+    config:
+      axis: -1
+      dtype: float32
+      name: concatenate_1
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_transpose_1
+        - 0
+        - 0
+        - &id016 {}
+      - - add_6
+        - 0
+        - 0
+        - *id016
+    name: concatenate_1
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_20
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - concatenate_1
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_20
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_22
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_20
+        - 0
+        - 0
+        - {}
+    name: re_lu_22
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 10
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 21
+      name: conv1d_22
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_22
+        - 0
+        - 0
+        - {}
+    name: conv1d_22
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_21
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_22
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_21
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_23
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_21
+        - 0
+        - 0
+        - {}
+    name: re_lu_23
+  - class_name: TensorFlowOpLayer
+    config:
+      constants:
+        1: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AAAAAAAAAAAAAAAA
+        2: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AAAAAAAAAAAgAAAA
+        3: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AQAAAAEAAAABAAAA
+      dtype: float32
+      name: strided_slice_1
+      node_def:
+        attr:
+          Index:
+            type: DT_INT32
+          T:
+            type: DT_FLOAT
+          begin_mask:
+            i: '3'
+          ellipsis_mask:
+            i: '0'
+          end_mask:
+            i: '3'
+          new_axis_mask:
+            i: '0'
+          shrink_axis_mask:
+            i: '0'
+        input:
+        - concatenate_1/concat
+        - strided_slice_1/begin
+        - strided_slice_1/end
+        - strided_slice_1/strides
+        name: strided_slice_1
+        op: StridedSlice
+      trainable: true
+    inbound_nodes:
+    - - - concatenate_1
+        - 0
+        - 0
+        - {}
+    name: tf_op_layer_strided_slice_1
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 10
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 21
+      name: conv1d_23
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_23
+        - 0
+        - 0
+        - {}
+    name: conv1d_23
+  - class_name: Add
+    config:
+      dtype: float32
+      name: add_10
+      trainable: true
+    inbound_nodes:
+    - - - tf_op_layer_strided_slice_1
+        - 0
+        - 0
+        - &id017 {}
+      - - conv1d_23
+        - 0
+        - 0
+        - *id017
+    name: add_10
+  - class_name: Conv1DTranspose
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer: null
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 1
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotNormal
+        config:
+          seed: null
+      kernel_regularizer: null
+      kernel_size: !!python/tuple
+      - 21
+      name: conv1d_transpose_2
+      output_padding: null
+      padding: same
+      strides: *id004
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - add_10
+        - 0
+        - 0
+        - {}
+    name: conv1d_transpose_2
+  - class_name: Concatenate
+    config:
+      axis: -1
+      dtype: float32
+      name: concatenate_2
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_transpose_2
+        - 0
+        - 0
+        - &id018 {}
+      - - add_5
+        - 0
+        - 0
+        - *id018
+    name: concatenate_2
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_22
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - concatenate_2
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_22
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_24
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_22
+        - 0
+        - 0
+        - {}
+    name: re_lu_24
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 10
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 21
+      name: conv1d_24
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_24
+        - 0
+        - 0
+        - {}
+    name: conv1d_24
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_23
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_24
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_23
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_25
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_23
+        - 0
+        - 0
+        - {}
+    name: re_lu_25
+  - class_name: TensorFlowOpLayer
+    config:
+      constants:
+        1: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AAAAAAAAAAAAAAAA
+        2: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AAAAAAAAAAAgAAAA
+        3: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AQAAAAEAAAABAAAA
+      dtype: float32
+      name: strided_slice_2
+      node_def:
+        attr:
+          Index:
+            type: DT_INT32
+          T:
+            type: DT_FLOAT
+          begin_mask:
+            i: '3'
+          ellipsis_mask:
+            i: '0'
+          end_mask:
+            i: '3'
+          new_axis_mask:
+            i: '0'
+          shrink_axis_mask:
+            i: '0'
+        input:
+        - concatenate_2/concat
+        - strided_slice_2/begin
+        - strided_slice_2/end
+        - strided_slice_2/strides
+        name: strided_slice_2
+        op: StridedSlice
+      trainable: true
+    inbound_nodes:
+    - - - concatenate_2
+        - 0
+        - 0
+        - {}
+    name: tf_op_layer_strided_slice_2
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 10
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 21
+      name: conv1d_25
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_25
+        - 0
+        - 0
+        - {}
+    name: conv1d_25
+  - class_name: Add
+    config:
+      dtype: float32
+      name: add_11
+      trainable: true
+    inbound_nodes:
+    - - - tf_op_layer_strided_slice_2
+        - 0
+        - 0
+        - &id019 {}
+      - - conv1d_25
+        - 0
+        - 0
+        - *id019
+    name: add_11
+  - class_name: Conv1DTranspose
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer: null
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 1
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotNormal
+        config:
+          seed: null
+      kernel_regularizer: null
+      kernel_size: !!python/tuple
+      - 21
+      name: conv1d_transpose_3
+      output_padding: null
+      padding: same
+      strides: *id004
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - add_11
+        - 0
+        - 0
+        - {}
+    name: conv1d_transpose_3
+  - class_name: Concatenate
+    config:
+      axis: -1
+      dtype: float32
+      name: concatenate_3
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_transpose_3
+        - 0
+        - 0
+        - &id020 {}
+      - - add_4
+        - 0
+        - 0
+        - *id020
+    name: concatenate_3
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_24
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - concatenate_3
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_24
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_26
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_24
+        - 0
+        - 0
+        - {}
+    name: re_lu_26
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 10
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 21
+      name: conv1d_26
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_26
+        - 0
+        - 0
+        - {}
+    name: conv1d_26
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_25
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_26
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_25
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_27
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_25
+        - 0
+        - 0
+        - {}
+    name: re_lu_27
+  - class_name: TensorFlowOpLayer
+    config:
+      constants:
+        1: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AAAAAAAAAAAAAAAA
+        2: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AAAAAAAAAAAgAAAA
+        3: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AQAAAAEAAAABAAAA
+      dtype: float32
+      name: strided_slice_3
+      node_def:
+        attr:
+          Index:
+            type: DT_INT32
+          T:
+            type: DT_FLOAT
+          begin_mask:
+            i: '3'
+          ellipsis_mask:
+            i: '0'
+          end_mask:
+            i: '3'
+          new_axis_mask:
+            i: '0'
+          shrink_axis_mask:
+            i: '0'
+        input:
+        - concatenate_3/concat
+        - strided_slice_3/begin
+        - strided_slice_3/end
+        - strided_slice_3/strides
+        name: strided_slice_3
+        op: StridedSlice
+      trainable: true
+    inbound_nodes:
+    - - - concatenate_3
+        - 0
+        - 0
+        - {}
+    name: tf_op_layer_strided_slice_3
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 10
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 21
+      name: conv1d_27
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_27
+        - 0
+        - 0
+        - {}
+    name: conv1d_27
+  - class_name: Add
+    config:
+      dtype: float32
+      name: add_12
+      trainable: true
+    inbound_nodes:
+    - - - tf_op_layer_strided_slice_3
+        - 0
+        - 0
+        - &id021 {}
+      - - conv1d_27
+        - 0
+        - 0
+        - *id021
+    name: add_12
+  - class_name: Conv1DTranspose
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer: null
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 1
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotNormal
+        config:
+          seed: null
+      kernel_regularizer: null
+      kernel_size: !!python/tuple
+      - 41
+      name: conv1d_transpose_4
+      output_padding: null
+      padding: same
+      strides: *id004
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - add_12
+        - 0
+        - 0
+        - {}
+    name: conv1d_transpose_4
+  - class_name: Concatenate
+    config:
+      axis: -1
+      dtype: float32
+      name: concatenate_4
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_transpose_4
+        - 0
+        - 0
+        - &id022 {}
+      - - add_3
+        - 0
+        - 0
+        - *id022
+    name: concatenate_4
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_26
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - concatenate_4
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_26
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_28
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_26
+        - 0
+        - 0
+        - {}
+    name: re_lu_28
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 10
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 41
+      name: conv1d_28
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_28
+        - 0
+        - 0
+        - {}
+    name: conv1d_28
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_27
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_28
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_27
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_29
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_27
+        - 0
+        - 0
+        - {}
+    name: re_lu_29
+  - class_name: TensorFlowOpLayer
+    config:
+      constants:
+        1: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AAAAAAAAAAAAAAAA
+        2: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AAAAAAAAAAAgAAAA
+        3: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AQAAAAEAAAABAAAA
+      dtype: float32
+      name: strided_slice_4
+      node_def:
+        attr:
+          Index:
+            type: DT_INT32
+          T:
+            type: DT_FLOAT
+          begin_mask:
+            i: '3'
+          ellipsis_mask:
+            i: '0'
+          end_mask:
+            i: '3'
+          new_axis_mask:
+            i: '0'
+          shrink_axis_mask:
+            i: '0'
+        input:
+        - concatenate_4/concat
+        - strided_slice_4/begin
+        - strided_slice_4/end
+        - strided_slice_4/strides
+        name: strided_slice_4
+        op: StridedSlice
+      trainable: true
+    inbound_nodes:
+    - - - concatenate_4
+        - 0
+        - 0
+        - {}
+    name: tf_op_layer_strided_slice_4
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 10
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 41
+      name: conv1d_29
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_29
+        - 0
+        - 0
+        - {}
+    name: conv1d_29
+  - class_name: Add
+    config:
+      dtype: float32
+      name: add_13
+      trainable: true
+    inbound_nodes:
+    - - - tf_op_layer_strided_slice_4
+        - 0
+        - 0
+        - &id023 {}
+      - - conv1d_29
+        - 0
+        - 0
+        - *id023
+    name: add_13
+  - class_name: Conv1DTranspose
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer: null
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 1
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotNormal
+        config:
+          seed: null
+      kernel_regularizer: null
+      kernel_size: !!python/tuple
+      - 41
+      name: conv1d_transpose_5
+      output_padding: null
+      padding: same
+      strides: *id004
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - add_13
+        - 0
+        - 0
+        - {}
+    name: conv1d_transpose_5
+  - class_name: Concatenate
+    config:
+      axis: -1
+      dtype: float32
+      name: concatenate_5
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_transpose_5
+        - 0
+        - 0
+        - &id024 {}
+      - - add_2
+        - 0
+        - 0
+        - *id024
+    name: concatenate_5
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_28
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - concatenate_5
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_28
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_30
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_28
+        - 0
+        - 0
+        - {}
+    name: re_lu_30
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 10
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 41
+      name: conv1d_30
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_30
+        - 0
+        - 0
+        - {}
+    name: conv1d_30
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_29
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_30
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_29
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_31
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_29
+        - 0
+        - 0
+        - {}
+    name: re_lu_31
+  - class_name: TensorFlowOpLayer
+    config:
+      constants:
+        1: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AAAAAAAAAAAAAAAA
+        2: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AAAAAAAAAAAgAAAA
+        3: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AQAAAAEAAAABAAAA
+      dtype: float32
+      name: strided_slice_5
+      node_def:
+        attr:
+          Index:
+            type: DT_INT32
+          T:
+            type: DT_FLOAT
+          begin_mask:
+            i: '3'
+          ellipsis_mask:
+            i: '0'
+          end_mask:
+            i: '3'
+          new_axis_mask:
+            i: '0'
+          shrink_axis_mask:
+            i: '0'
+        input:
+        - concatenate_5/concat
+        - strided_slice_5/begin
+        - strided_slice_5/end
+        - strided_slice_5/strides
+        name: strided_slice_5
+        op: StridedSlice
+      trainable: true
+    inbound_nodes:
+    - - - concatenate_5
+        - 0
+        - 0
+        - {}
+    name: tf_op_layer_strided_slice_5
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 10
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 41
+      name: conv1d_31
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_31
+        - 0
+        - 0
+        - {}
+    name: conv1d_31
+  - class_name: Add
+    config:
+      dtype: float32
+      name: add_14
+      trainable: true
+    inbound_nodes:
+    - - - tf_op_layer_strided_slice_5
+        - 0
+        - 0
+        - &id025 {}
+      - - conv1d_31
+        - 0
+        - 0
+        - *id025
+    name: add_14
+  - class_name: Conv1DTranspose
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer: null
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 1
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotNormal
+        config:
+          seed: null
+      kernel_regularizer: null
+      kernel_size: !!python/tuple
+      - 41
+      name: conv1d_transpose_6
+      output_padding: null
+      padding: same
+      strides: *id004
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - add_14
+        - 0
+        - 0
+        - {}
+    name: conv1d_transpose_6
+  - class_name: Concatenate
+    config:
+      axis: -1
+      dtype: float32
+      name: concatenate_6
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_transpose_6
+        - 0
+        - 0
+        - &id026 {}
+      - - add_1
+        - 0
+        - 0
+        - *id026
+    name: concatenate_6
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_30
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - concatenate_6
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_30
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_32
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_30
+        - 0
+        - 0
+        - {}
+    name: re_lu_32
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 10
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 41
+      name: conv1d_32
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_32
+        - 0
+        - 0
+        - {}
+    name: conv1d_32
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_31
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_32
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_31
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_33
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_31
+        - 0
+        - 0
+        - {}
+    name: re_lu_33
+  - class_name: TensorFlowOpLayer
+    config:
+      constants:
+        1: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AAAAAAAAAAAAAAAA
+        2: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AAAAAAAAAAAgAAAA
+        3: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AQAAAAEAAAABAAAA
+      dtype: float32
+      name: strided_slice_6
+      node_def:
+        attr:
+          Index:
+            type: DT_INT32
+          T:
+            type: DT_FLOAT
+          begin_mask:
+            i: '3'
+          ellipsis_mask:
+            i: '0'
+          end_mask:
+            i: '3'
+          new_axis_mask:
+            i: '0'
+          shrink_axis_mask:
+            i: '0'
+        input:
+        - concatenate_6/concat
+        - strided_slice_6/begin
+        - strided_slice_6/end
+        - strided_slice_6/strides
+        name: strided_slice_6
+        op: StridedSlice
+      trainable: true
+    inbound_nodes:
+    - - - concatenate_6
+        - 0
+        - 0
+        - {}
+    name: tf_op_layer_strided_slice_6
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 10
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 41
+      name: conv1d_33
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_33
+        - 0
+        - 0
+        - {}
+    name: conv1d_33
+  - class_name: Add
+    config:
+      dtype: float32
+      name: add_15
+      trainable: true
+    inbound_nodes:
+    - - - tf_op_layer_strided_slice_6
+        - 0
+        - 0
+        - &id027 {}
+      - - conv1d_33
+        - 0
+        - 0
+        - *id027
+    name: add_15
+  - class_name: Conv1DTranspose
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer: null
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 1
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotNormal
+        config:
+          seed: null
+      kernel_regularizer: null
+      kernel_size: !!python/tuple
+      - 41
+      name: conv1d_transpose_7
+      output_padding: null
+      padding: same
+      strides: *id004
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - add_15
+        - 0
+        - 0
+        - {}
+    name: conv1d_transpose_7
+  - class_name: Concatenate
+    config:
+      axis: -1
+      dtype: float32
+      name: concatenate_7
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_transpose_7
+        - 0
+        - 0
+        - &id028 {}
+      - - add
+        - 0
+        - 0
+        - *id028
+    name: concatenate_7
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_32
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - concatenate_7
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_32
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_34
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_32
+        - 0
+        - 0
+        - {}
+    name: re_lu_34
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 10
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 41
+      name: conv1d_34
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_34
+        - 0
+        - 0
+        - {}
+    name: conv1d_34
+  - class_name: BatchNormalization
+    config:
+      axis: !!python/object/apply:tensorflow.python.training.tracking.data_structures.ListWrapper
+      - - 2
+      beta_constraint: null
+      beta_initializer:
+        class_name: Zeros
+        config: {}
+      beta_regularizer: null
+      center: true
+      dtype: float32
+      epsilon: 0.001
+      gamma_constraint: null
+      gamma_initializer:
+        class_name: Ones
+        config: {}
+      gamma_regularizer: null
+      momentum: 0.99
+      moving_mean_initializer:
+        class_name: Zeros
+        config: {}
+      moving_variance_initializer:
+        class_name: Ones
+        config: {}
+      name: batch_normalization_33
+      scale: true
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_34
+        - 0
+        - 0
+        - {}
+    name: batch_normalization_33
+  - class_name: ReLU
+    config:
+      dtype: float32
+      max_value: null
+      name: re_lu_35
+      negative_slope: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      threshold: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple []
+        - *id002
+        - false
+        - !!binary |
+          AAAAAA==
+      trainable: true
+    inbound_nodes:
+    - - - batch_normalization_33
+        - 0
+        - 0
+        - {}
+    name: re_lu_35
+  - class_name: TensorFlowOpLayer
+    config:
+      constants:
+        1: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AAAAAAAAAAAAAAAA
+        2: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AAAAAAAAAAAgAAAA
+        3: !!python/object/apply:numpy.core.multiarray._reconstruct
+          args:
+          - *id001
+          - !!python/tuple
+            - 0
+          - !!binary |
+            Yg==
+          state: !!python/tuple
+          - 1
+          - !!python/tuple
+            - 3
+          - *id014
+          - false
+          - !!binary |
+            AQAAAAEAAAABAAAA
+      dtype: float32
+      name: strided_slice_7
+      node_def:
+        attr:
+          Index:
+            type: DT_INT32
+          T:
+            type: DT_FLOAT
+          begin_mask:
+            i: '3'
+          ellipsis_mask:
+            i: '0'
+          end_mask:
+            i: '3'
+          new_axis_mask:
+            i: '0'
+          shrink_axis_mask:
+            i: '0'
+        input:
+        - concatenate_7/concat
+        - strided_slice_7/begin
+        - strided_slice_7/end
+        - strided_slice_7/strides
+        name: strided_slice_7
+        op: StridedSlice
+      trainable: true
+    inbound_nodes:
+    - - - concatenate_7
+        - 0
+        - 0
+        - {}
+    name: tf_op_layer_strided_slice_7
+  - class_name: Conv1D
+    config:
+      activation: linear
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 10
+      dtype: float32
+      filters: 32
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer:
+        class_name: L2
+        config:
+          l2: 9.999999747378752e-06
+      kernel_size: !!python/tuple
+      - 41
+      name: conv1d_35
+      padding: same
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - re_lu_35
+        - 0
+        - 0
+        - {}
+    name: conv1d_35
+  - class_name: Add
+    config:
+      dtype: float32
+      name: add_16
+      trainable: true
+    inbound_nodes:
+    - - - tf_op_layer_strided_slice_7
+        - 0
+        - 0
+        - &id029 {}
+      - - conv1d_35
+        - 0
+        - 0
+        - *id029
+    name: add_16
+  - class_name: Cropping1D
+    config:
+      cropping: !!python/tuple
+      - 4096
+      - 4096
+      dtype: float32
+      name: cropping1d_1
+      trainable: true
+    inbound_nodes:
+    - - - add_16
+        - 0
+        - 0
+        - {}
+    name: cropping1d_1
+  - class_name: Conv1D
+    config:
+      activation: sigmoid
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer: null
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 1
+      dtype: float32
+      filters: 4
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer: null
+      kernel_size: !!python/tuple
+      - 1
+      name: conv1d_37
+      padding: valid
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - cropping1d_1
+        - 0
+        - 0
+        - {}
+    name: conv1d_37
+  - class_name: Conv1D
+    config:
+      activation: sigmoid
+      activity_regularizer: null
+      bias_constraint: null
+      bias_initializer:
+        class_name: Zeros
+        config: {}
+      bias_regularizer: null
+      data_format: channels_last
+      dilation_rate: !!python/tuple
+      - 1
+      dtype: float32
+      filters: 4
+      groups: 1
+      kernel_constraint: null
+      kernel_initializer:
+        class_name: GlorotUniform
+        config:
+          seed: null
+      kernel_regularizer: null
+      kernel_size: !!python/tuple
+      - 1
+      name: conv1d_36
+      padding: valid
+      strides: !!python/tuple
+      - 1
+      trainable: true
+      use_bias: true
+    inbound_nodes:
+    - - - cropping1d_1
+        - 0
+        - 0
+        - {}
+    name: conv1d_36
+  - class_name: Lambda
+    config:
+      arguments: {}
+      dtype: float32
+      function: !!python/tuple
+      - '4wEAAAAAAAAAAAAAAAEAAAACAAAAUwAAAHMIAAAAfABkARQAUwApAk5nAAAAAAAANECpACkB2gF4
+
+        cgEAAAByAQAAAPpLL3QxLWRhdGEvcHJvamVjdC9mZ2Vub21pY3MvZXNhbmRlcnMvU3BsaWNlTW9k
+
+        ZWwvc3BsaWNlX21vZGVsL3NwbGljZV91bmV0LnB52gg8bGFtYmRhPgUBAADzAAAAAA==
+
+        '
+      - null
+      - null
+      function_type: lambda
+      module: splice_unet
+      name: lambda
+      output_shape: null
+      output_shape_module: null
+      output_shape_type: raw
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_37
+        - 0
+        - 0
+        - {}
+    name: lambda
+  - class_name: Concatenate
+    config:
+      axis: -1
+      dtype: float32
+      name: concatenate_8
+      trainable: true
+    inbound_nodes:
+    - - - conv1d_36
+        - 0
+        - 0
+        - &id030 {}
+      - - lambda
+        - 0
+        - 0
+        - *id030
+    name: concatenate_8
+  name: functional_1
+  output_layers:
+  - - concatenate_8
+    - 0
+    - 0
+keras_version: 2.4.0
